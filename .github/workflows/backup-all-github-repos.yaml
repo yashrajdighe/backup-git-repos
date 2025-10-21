@@ -1,6 +1,7 @@
 name: Backup All Github Repositories
 run-name: Backup All Github Repositories
 on:
+  pull_request:
   schedule:
     - cron: "0 0 * * *" # Runs daily at 12 AM UTC
 permissions:
@@ -30,7 +31,7 @@ jobs:
       - name: Generate matrix of repositories
         id: set-matrix
         run: |
-          repos=$(gh repo list yashrajdighe --limit 1000 --json nameWithOwner --jq '.[].nameWithOwner')
+          repos=$(gh repo list yashrajdighe --limit 1000 --json nameWithOwner,isFork --jq '.[] | select(.isFork == false) | .nameWithOwner')
           matrix=$(jq -n --arg repos "$repos" '{"include": ($repos | split("\n") | map(select(length > 0) | {repository: .}))}')
           echo "Matrix: $matrix"
           matrix_escaped=$(echo "$matrix" | jq -c .)
