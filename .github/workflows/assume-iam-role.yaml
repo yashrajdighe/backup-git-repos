@@ -17,7 +17,7 @@ jobs:
       - name: Verify AWS Identity
         run: aws sts get-caller-identity
       - name: test backup git action
-        uses: yashrajdighe/gh-actions/backup-git-repo@add-custom-action-to-backup-git-repos
+        uses: yashrajdighe/gh-actions/backup-github-repo@add-custom-action-to-backup-git-repos
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: "yashrajdighe/backup-git-repos"
