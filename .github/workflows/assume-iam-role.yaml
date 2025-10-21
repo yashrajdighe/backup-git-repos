@@ -1,6 +1,9 @@
 name: Test Assume IAM Role Action
 run-name: ${{ github.actor }} is testing IAM role
 on: [pull_request]
+permissions:
+  id-token: write
+  contents: read
 jobs:
   check-bats-version:
     runs-on: ubuntu-latest
