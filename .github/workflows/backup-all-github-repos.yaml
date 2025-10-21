@@ -1,0 +1,55 @@
+name: Backup All Github Repositories
+run-name: Backup All Github Repositories
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs daily at 12 AM UTC
+permissions:
+  id-token: write
+  contents: read
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  create-github-app-token:
+    runs-on: ubuntu-latest
+    environment: main
+    outputs:
+      gh-app-token: ${{ steps.create-gh-app-token.outputs.gh-app-token }}
+    steps:
+      - name: Create GitHub App Token
+        id: create-gh-app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_KEY }}
+          owner: yashrajdighe
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Generate matrix of repositories
+        id: set-matrix
+        run: |
+          repos=$(gh repo list yashrajdighe --limit 1000 --json nameWithOwner,isFork --jq '.[] | select(.isFork == false) | .nameWithOwner')
+          matrix=$(jq -n --arg repos "$repos" '{"include": ($repos | split("\n") | map(select(length > 0) | {repository: .}))}')
+          echo "Matrix: $matrix"
+          matrix_escaped=$(echo "$matrix" | jq -c .)
+          echo "matrix=${matrix_escaped}" >> $GITHUB_OUTPUT
+  generate-backup:
+    name: Generate Backup for ${{ matrix.repository }} repository
+    needs: [generate-matrix, create-github-app-token]
+    strategy:
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.0
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::530354880605:role/common-yashrajdighe-git-repo-backup-20251020210229788000000001
+          role-session-name: GitHubActionsSession
+      - name: Backup GitHub Repository ${{ matrix.repository }}
+        uses: yashrajdighe/gh-actions/backup-github-repo@main
+        with:
+          token: ${{ needs.create-github-app-token.outputs.gh-app-token }}
+          repository: ${{ matrix.repository }}
