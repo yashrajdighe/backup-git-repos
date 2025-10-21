@@ -1,7 +1,6 @@
 name: Backup All Github Repositories
 run-name: Backup All Github Repositories
 on:
-  pull_request:
   schedule:
     - cron: "0 0 * * *" # Runs daily at 12 AM UTC
 permissions:
