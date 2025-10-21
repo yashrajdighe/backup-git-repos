@@ -7,6 +7,18 @@ permissions:
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
+  create-github-app-token:
+    runs-on: ubuntu-latest
+    environment: main
+    outputs:
+      gh-app-token: ${{ steps.create-gh-app-token.outputs.gh-app-token }}
+    steps:
+      - name: Create GitHub App Token
+        id: create-gh-app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_KEY }}
   generate-matrix:
     runs-on: ubuntu-latest
     outputs:
