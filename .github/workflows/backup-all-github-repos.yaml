@@ -21,6 +21,7 @@ jobs:
           echo "::set-output name=matrix::$matrix"
   generate-backup:
     name: Generate Backup for ${{ matrix.repository }} repository
+    needs: generate-matrix
     strategy:
       matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
