@@ -19,20 +19,20 @@ jobs:
           matrix=$(jq -n --arg repos "$repos" '{"include": ($repos | split("\n") | map(select(length > 0) | {repository: .}))}')
           echo "Matrix: $matrix"
           echo "::set-output name=matrix::$matrix"
-  # generate-backup:
-  #   name: Generate Backup for ${{ matrix.matrix }} repository
-  #   strategy:
-  #     matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v5.1.0
-  #       with:
-  #         aws-region: us-east-1
-  #         role-to-assume: arn:aws:iam::530354880605:role/common-yashrajdighe-git-repo-backup-20251020210229788000000001
-  #         role-session-name: GitHubActionsSession
-  #     - name: Backup GitHub Repository ${{ matrix.repository }}
-  #       uses: yashrajdighe/gh-actions/backup-github-repo@add-custom-action-to-backup-git-repos
-  #       with:
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         repository: "yashrajdighe/backup-git-repos"
+  generate-backup:
+    name: Generate Backup for ${{ matrix.repository }} repository
+    strategy:
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.0
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::530354880605:role/common-yashrajdighe-git-repo-backup-20251020210229788000000001
+          role-session-name: GitHubActionsSession
+      # - name: Backup GitHub Repository ${{ matrix.repository }}
+      #   uses: yashrajdighe/gh-actions/backup-github-repo@add-custom-action-to-backup-git-repos
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     repository: "yashrajdighe/backup-git-repos"
