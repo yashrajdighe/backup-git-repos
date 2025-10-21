@@ -5,7 +5,7 @@ permissions:
   id-token: write
   contents: read
 jobs:
-  check-bats-version:
+  assume-role:
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS Credentials
@@ -16,3 +16,8 @@ jobs:
           role-session-name: GitHubActionsSession
       - name: Verify AWS Identity
         run: aws sts get-caller-identity
+      - name: test backup git action
+        uses: yashrajdighe/gh-actions/backup-git-repo@add-custom-action-to-backup-git-repos
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: "yashrajdighe/backup-git-repos"
