@@ -18,7 +18,8 @@ jobs:
           repos=$(gh repo list yashrajdighe --limit 1000 --json nameWithOwner --jq '.[].nameWithOwner')
           matrix=$(jq -n --arg repos "$repos" '{"include": ($repos | split("\n") | map(select(length > 0) | {repository: .}))}')
           echo "Matrix: $matrix"
-          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+          matrix_escaped=$(echo "$matrix" | jq -c .)
+          echo "matrix=${matrix_escaped}" >> $GITHUB_OUTPUT
   generate-backup:
     name: Generate Backup for ${{ matrix.repository }} repository
     needs: generate-matrix
