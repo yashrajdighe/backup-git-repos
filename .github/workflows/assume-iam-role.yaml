@@ -1,5 +1,5 @@
-name: Test Assume IAM Role Action
-run-name: ${{ github.actor }} is testing IAM role
+name: Test Backup GitHub Repo Action
+run-name: ${{ github.actor }} is testing Backup Action
 on: [pull_request]
 permissions:
   id-token: write
