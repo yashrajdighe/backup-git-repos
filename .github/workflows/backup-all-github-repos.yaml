@@ -61,7 +61,7 @@ jobs:
 
       - name: Update backup log for ${{ matrix.repository }}
         env:
-          GITHUB_TOKEN: ${{ needs.create-github-app-token.outputs.gh-app-token }}
+          GH_TOKEN: ${{ needs.create-github-app-token.outputs.gh-app-token }}
         run: |
           # full repository name (owner/name)
           repo_full="${{ matrix.repository }}"
@@ -92,9 +92,6 @@ jobs:
             # create a PR against the default branch (main) using gh CLI
             pr_title="chore: update backup log for ${repo_full} at ${timestamp}"
             pr_body="Automatic backup log update for ${repo_full} by workflow."
-
-            # Ensure GH CLI uses the provided token
-            export GITHUB_TOKEN="${GITHUB_TOKEN}"
 
             # create PR with gh; parse returned URL to extract PR number (robust across gh versions)
             echo "Creating PR with branch=$branch, base=main, repo=$GITHUB_REPOSITORY"
