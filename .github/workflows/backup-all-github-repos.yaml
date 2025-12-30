@@ -8,8 +8,6 @@ permissions:
   id-token: write
   contents: write
   pull-requests: write
-env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   create-github-app-token:
     runs-on: ubuntu-latest
