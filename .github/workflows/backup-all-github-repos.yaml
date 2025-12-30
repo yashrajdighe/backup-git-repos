@@ -97,15 +97,20 @@ jobs:
             export GITHUB_TOKEN="${GITHUB_TOKEN}"
 
             # create PR with gh; parse returned URL to extract PR number (robust across gh versions)
-            pr_url=$(gh pr create --title "$pr_title" --body "$pr_body" --base main --head "$branch" --repo "$GITHUB_REPOSITORY" 2>/dev/null || true)
+            echo "Creating PR with branch=$branch, base=main, repo=$GITHUB_REPOSITORY"
+            pr_output=$(gh pr create --title "$pr_title" --body "$pr_body" --base main --head "$branch" --repo "$GITHUB_REPOSITORY" 2>&1)
+            pr_exit_code=$?
+            echo "gh pr create exit code: $pr_exit_code"
+            echo "gh pr create output: $pr_output"
+            
             pr_number=""
-            if [ -n "$pr_url" ]; then
-              pr_number=$(echo "$pr_url" | sed -E 's#.*/pull/([0-9]+).*#\1#')
+            if [ $pr_exit_code -eq 0 ] && [ -n "$pr_output" ]; then
+              pr_number=$(echo "$pr_output" | sed -E 's#.*/pull/([0-9]+).*#\1#')
             fi
 
             # If gh returned JSON with number, try that as a fallback
             if [ -z "$pr_number" ]; then
-              pr_number=$(gh pr view --repo "$GITHUB_REPOSITORY" --json number --jq .number 2>/dev/null || true)
+              pr_number=$(gh pr view --repo "$GITHUB_REPOSITORY" --json number --jq .number 2>&1 || true)
             fi
 
             if [ -n "$pr_number" ] && [ "$pr_number" != "null" ]; then
@@ -113,6 +118,6 @@ jobs:
               # enable auto-merge using gh (may require additional token permissions)
               # gh pr merge "$pr_number" --auto --merge --repo "$GITHUB_REPOSITORY" || echo "Failed to enable auto-merge for PR #${pr_number}; check token permissions"
             else
-              echo "Failed to create PR; gh output: $pr_url"
+              echo "Failed to create PR; gh output: $pr_output"
             fi
           fi
