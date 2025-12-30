@@ -3,6 +3,7 @@ run-name: Backup All Github Repositories
 on:
   schedule:
     - cron: "0 0 * * *" # Runs daily at 12 AM UTC
+  workflow_dispatch:
 permissions:
   id-token: write
   contents: write
