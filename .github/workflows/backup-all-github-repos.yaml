@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5.1.0
+        uses: aws-actions/configure-aws-credentials@v5.1.1
         with:
           aws-region: us-east-1
           role-to-assume: arn:aws:iam::530354880605:role/common-yashrajdighe-git-repo-backup-20251020210229788000000001
