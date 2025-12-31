@@ -56,7 +56,7 @@ jobs:
 
       - name: Update backup log for ${{ matrix.repository }}
         run: |
-          $GH_TOKEN=${{ steps.create-gh-app-token.outputs.gh-app-token }}
+          GH_TOKEN=${{ steps.create-gh-app-token.outputs.gh-app-token }}
           echo $GH_TOKEN
           # full repository name (owner/name)
           repo_full="${{ matrix.repository }}"
