@@ -64,6 +64,7 @@ jobs:
         #   GH_TOKEN: ${{ needs.create-github-app-token.outputs.gh-app-token }}
         run: |
           GH_TOKEN="${{ needs.create-github-app-token.outputs.gh-app-token }}"
+          echo $GH_TOKEN
           # full repository name (owner/name)
           repo_full="${{ matrix.repository }}"
           # extract owner and repo name
