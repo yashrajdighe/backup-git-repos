@@ -48,15 +48,16 @@ jobs:
       - name: Backup GitHub Repository ${{ matrix.repository }}
         uses: yashrajdighe/gh-actions/backup-github-repo@main
         with:
-          token: ${{ steps.create-gh-app-token.outputs.gh-app-token }}
+          token: ${{ steps.create-gh-app-token.outputs.token }}
           repository: ${{ matrix.repository }}
 
       - name: Checkout repository to update logs
         uses: actions/checkout@v6
 
       - name: Update backup log for ${{ matrix.repository }}
+        env:
+          GH_TOKEN: ${{ steps.create-gh-app-token.outputs.token }}
         run: |
-          GH_TOKEN=${{ steps.create-gh-app-token.outputs.gh-app-token }}
           echo $GH_TOKEN
           # full repository name (owner/name)
           repo_full="${{ matrix.repository }}"
