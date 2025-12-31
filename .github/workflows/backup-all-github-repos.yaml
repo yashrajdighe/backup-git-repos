@@ -109,7 +109,7 @@ jobs:
             if [ -n "$pr_number" ] && [ "$pr_number" != "null" ]; then
               echo "Created PR #${pr_number}"
               # enable auto-merge using gh (may require additional token permissions)
-              # gh pr merge "$pr_number" --auto --merge --repo "$GITHUB_REPOSITORY" || echo "Failed to enable auto-merge for PR #${pr_number}; check token permissions"
+              gh pr merge "$pr_number" --auto --merge --repo "$GITHUB_REPOSITORY" || echo "Failed to enable auto-merge for PR #${pr_number}; check token permissions"
             else
               echo "Failed to create PR; gh output: $pr_output"
             fi
